@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "public": "dist",
+    "site":"staging-medical-lab",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
