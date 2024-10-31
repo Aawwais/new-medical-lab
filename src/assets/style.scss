@@ -1,9 +1,20 @@
+.auth-main {
+    background-image: url("../assets/images/custom/lab3.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    min-height: 100vh;
+    height: auto;
+}
+
 .main-content {
     position: relative;
     @media (min-width: 768px) {
         margin-left: 250px;
     }
 }
+
 @media (min-width: 768px) {
     .navbar-vertical.navbar-expand-md {
         display: block;
@@ -366,4 +377,34 @@
         #0e5fdf
     ); /* Adjusted for a slightly darker gradient on hover */
     cursor: pointer;
+}
+
+.icon-shape {
+    padding: 12px;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+.icon {
+    width: 3rem;
+    height: 3rem;
+}
+.text-muted {
+    color: #8898aa !important;
+}
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: initial;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 0.375rem;
+}
+.card-stats .card-body {
+    padding: 1rem 1.5rem;
 }

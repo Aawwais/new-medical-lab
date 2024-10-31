@@ -43,7 +43,7 @@ const Login = () => {
 
   return (
     <Col lg="5" md="7">
-      <Card className="bg-secondary shadow border-0">
+      <Card className="shadow border-0">
         <CardBody className="px-lg-5 py-lg-5">
           <div className="text-center text-muted mb-4">
             <small>Sign in</small>
