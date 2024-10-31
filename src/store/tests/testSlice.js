@@ -32,7 +32,7 @@ const testSlice = createSlice({
             })
             .addCase(editTest.fulfilled, (state, action) => {
                 const index = state.tests.findIndex(
-                    (test) => test.uid === action.payload.id
+                    (test) => test.uid === action.payload.uid
                 );
                 if (index !== -1) state.tests[index] = action.payload;
             })

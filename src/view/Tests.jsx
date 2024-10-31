@@ -26,17 +26,23 @@ import moment from "moment";
 import { toast } from "react-toastify";
 import Header from "../components/Header/Header";
 import { addTest, deleteTest, editTest, fetchTests } from "../store/tests/testThunk";
+import SpreadsheetComponent from "../components/SpreadsheetComponent";
 
 const Tests = () => {
   const dispatch = useDispatch();
   const [modal, setModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [testUid, setTestUid] = useState("");
+  const [data, setData] = useState([
+    [{ value: "" }, { value: "" }, { value: "" }],
+    [{ value: "" }, { value: "" }, { value: "" }],
+  ]);
   const [loader, setLoader] = useState({
     btn: false,
     data: false,
     filterApply: false,
     filterClear: false,
+    loadMore:false
   });
   const [filters, setFilters] = useState({
     category: "",
@@ -45,7 +51,7 @@ const Tests = () => {
   const [testData, setTestData] = useState({
     testName: "",
     testCategory: "",
-    testPrice: 0,
+    testPrice: null,
   });
 
   const { tests, hasMore,lastVisible } = useSelector((state) => state.tests);
@@ -59,10 +65,10 @@ const Tests = () => {
   };
 
   const handleChange = (e) => {
-    const { value, name } = e.target;
+    const { value, name,type } = e.target;
     setTestData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type=="number"? Number(value): value,
     }));
   };
 
@@ -98,9 +104,20 @@ const Tests = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoader((prev) => ({ ...prev, btn: true }));
+    let newData = {
+      ...testData,
+      excelData: data.map((row, rowIndex) => {
+        const rowObject = {  }; 
+        row.forEach((cell, colIndex) => {
+          rowObject[`Column_${colIndex + 1}`] = cell.value; 
+        });
+        return rowObject;
+      }),
+    };
+    
     if (testUid) {  
      dispatch(
-        editTest({id:testUid, test:testData, onSuccess:() => {
+        editTest({id:testUid, test:newData, onSuccess:() => {
           setLoader((prev) => ({ ...prev, btn: false }));
           toggleModal();
           setTestUid("");
@@ -108,7 +125,7 @@ const Tests = () => {
       );
     } else {
       dispatch(
-        addTest({data:testData, onSuccess:() => {
+        addTest({data:newData, onSuccess:() => {
           setLoader((prev) => ({ ...prev, btn: false }));
           toggleModal();
         }})
@@ -135,26 +152,29 @@ const Tests = () => {
       testCategory: item.testCategory,
       testPrice: item.testPrice,
     });
+    setData(
+      item.excelData.map((row) =>
+        Object.keys(row).map((colKey) => ({ value: row[colKey] }))
+      )
+    );
     setTestUid(item.uid);
     toggleModal();
   };
 
   const loadMore = () => {
-    setLoader((prev) => ({ ...prev, btn: true }));
+    setLoader((prev) => ({ ...prev, loadMore: true }));
     dispatch(
       fetchTests({
         filter: { category: "", testId: "" }, 
         lastVisible, 
         onSuccess: () => {
-          setLoader((prev) => ({ ...prev, btn: false })); 
+          setLoader((prev) => ({ ...prev, loadMore: false })); 
         },
       })
     );
   };
 
   const applyFilter = () => {
-    console.log("Apply filter");
-    toast.success("hello")
     if (filters.category || filters.testId) {
       setLoader((prev) => ({
         ...prev,
@@ -227,9 +247,10 @@ const Tests = () => {
                   {loader.filterApply ? <Spinner size="sm" /> : "Apply filter"}{" "}
                 </Button>
                 <Button
-                  className="text-nowrap"
+                  className="text-nowrap mx-2"
                   color="danger"
                   onClick={clearFilter}
+                 
                 >
                   {loader.filterClear ? <Spinner size="sm" /> : "Clear filter"}
                 </Button>
@@ -287,6 +308,7 @@ const Tests = () => {
                           <Button
                             color="primary"
                             size="sm"
+                            className="mx-2"
                             onClick={() => openEditModal(item)}
                           >
                             Edit
@@ -309,9 +331,9 @@ const Tests = () => {
                 <Button
                   color="primary"
                   onClick={loadMore}
-                  disabled={!hasMore || loader.btn}
+                  disabled={!hasMore || loader.loadMore}
                 >
-                  {loader.btn ? <Spinner size="sm" /> : "Load More"}
+                  {loader.loadMore ? <Spinner size="sm" /> : "Load More"}
                 </Button>
               </div>
             {/* )} */}
@@ -321,7 +343,7 @@ const Tests = () => {
 
       <Modal isOpen={modal} toggle={toggleModal} centered size="xl">
         <Form onSubmit={handleSubmit}>
-          <ModalBody>
+          <ModalBody className="pt-4 px-4">
             <Row>
               <Col md="4">
                 <FormGroup>
@@ -364,6 +386,9 @@ const Tests = () => {
                     onChange={handleChange}
                   />
                 </FormGroup>
+              </Col>
+              <Col xs="12">
+              <SpreadsheetComponent data={data} setData={setData}/>
               </Col>
             </Row>
           </ModalBody>

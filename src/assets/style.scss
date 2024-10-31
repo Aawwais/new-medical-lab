@@ -336,3 +336,34 @@
 .py-8 {
     padding-bottom: 8rem !important;
 }
+
+::-webkit-scrollbar {
+    width: 5px; /* Small width for the scrollbar */
+    height: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 2px grey;
+    border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+        87deg,
+        #11cdef,
+        #1171ef
+    ); /* Set gradient color */
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+        87deg,
+        #0fa3cf,
+        #0e5fdf
+    ); /* Adjusted for a slightly darker gradient on hover */
+    cursor: pointer;
+}

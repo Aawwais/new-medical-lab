@@ -3,11 +3,8 @@ import { Button, Container, Row, Col } from "reactstrap";
 import Spreadsheet from "react-spreadsheet";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const SpreadsheetComponent = ({ onSubmit }) => {
-  const [data, setData] = useState([
-    [{ value: "Item 1" }, { value: "Detail 1" }, { value: "Value 1" }],
-    [{ value: "Item 2" }, { value: "Detail 2" }, { value: "Value 2" }],
-  ]);
+const SpreadsheetComponent = ({ data,setData}) => {
+
 
   const addRow = () => {
     setData((prevData) => [
@@ -41,24 +38,12 @@ const SpreadsheetComponent = ({ onSubmit }) => {
     setData(newData);
   };
 
-  // Handle submit action
-  const handleSubmit = () => {
-    onSubmit(data);
-  };
 
   return (
-    <Container>
+   
+      <Row className="my-3">
       <Row className="mb-3">
-        <Col>
-          <Button color="primary" onClick={addRow}>Add Row</Button>
-          <Button color="success" onClick={addColumn}>Add Column</Button>
-          <Button color="danger" onClick={removeRow}>Remove Last Row</Button>
-          <Button color="warning" onClick={removeColumn}>Remove Last Column</Button>
-          <Button color="info" onClick={handleSubmit}>Save Data</Button> {/* Submit Button */}
-        </Col>
-      </Row>
-      <Row>
-        <Col>
+        <Col className="overflow-auto">
           <Spreadsheet
             data={data}
             onChange={handleCellChange}
@@ -67,7 +52,16 @@ const SpreadsheetComponent = ({ onSubmit }) => {
           />
         </Col>
       </Row>
-    </Container>
+        <Col>
+          <Button className="mx-2" color="primary" size="sm" onClick={addRow}>Add Row</Button>
+          <Button className="mx-2"  color="success" size="sm"  onClick={addColumn}>Add Column</Button>
+          <Button className="mx-2"  color="danger" size="sm"  onClick={removeRow}>Remove Row</Button>
+          <Button className="mx-2"  color="warning" size="sm"  onClick={removeColumn}>Remove Column</Button>
+          {/* <Button color="info" onClick={handleSubmit}>Save Data</Button> Submit Button */}
+        </Col>
+      </Row>
+      
+  
   );
 };
 

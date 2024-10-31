@@ -77,12 +77,14 @@ export const addTest = createAsyncThunk(
                 testId: uniqueId,
                 created_at: serverTimestamp(),
             };
+            console.log(test);
             const docRef = await addDoc(collection(db, "tests"), test);
             const docSnapshot = await getDoc(docRef);
 
             onSuccess();
-            return { id: docRef.id, ...docSnapshot.data() };
+            return { uid: docRef.id, ...docSnapshot.data() };
         } catch (error) {
+            console.log(error);
             return rejectWithValue(error.message);
         }
     }
@@ -94,7 +96,7 @@ export const editTest = createAsyncThunk(
         try {
             await updateDoc(doc(db, "tests", id), test);
             onSuccess();
-            return { id, ...test };
+            return { uid: id, ...test };
         } catch (error) {
             return rejectWithValue(error.message);
         }
