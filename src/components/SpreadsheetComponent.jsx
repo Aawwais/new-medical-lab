@@ -3,7 +3,7 @@ import { Button, Container, Row, Col } from "reactstrap";
 import Spreadsheet from "react-spreadsheet";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const SpreadsheetComponent = ({ data,setData}) => {
+const SpreadsheetComponent = ({ data,setData,showBtn}) => {
 
 
   const addRow = () => {
@@ -33,9 +33,11 @@ const SpreadsheetComponent = ({ data,setData}) => {
     }
   };
 
-  // Handle changes in spreadsheet
   const handleCellChange = (newData) => {
     setData(newData);
+  };
+  const handleKeyDown = (e) => {
+    e.preventDefault(); 
   };
 
 
@@ -46,12 +48,14 @@ const SpreadsheetComponent = ({ data,setData}) => {
         <Col className="overflow-auto">
           <Spreadsheet
             data={data}
-            onChange={handleCellChange}
+            onChange={showBtn ? handleCellChange : undefined}
             columnLabels={data[0].map((_, index) => `Column ${index + 1}`)}
             rowLabels={data.map((_, index) => `Item ${index + 1}`)}
+            onKeyDown={showBtn ?  undefined:handleKeyDown}
           />
         </Col>
       </Row>
+      {showBtn&&
         <Col>
           <Button className="mx-2" color="primary" size="sm" onClick={addRow}>Add Row</Button>
           <Button className="mx-2"  color="success" size="sm"  onClick={addColumn}>Add Column</Button>
@@ -59,6 +63,7 @@ const SpreadsheetComponent = ({ data,setData}) => {
           <Button className="mx-2"  color="warning" size="sm"  onClick={removeColumn}>Remove Column</Button>
           {/* <Button color="info" onClick={handleSubmit}>Save Data</Button> Submit Button */}
         </Col>
+      }
       </Row>
       
   

@@ -212,6 +212,27 @@ const Tests = () => {
     );
   };
 
+  const [showDataModal,setShowDataModal]=useState(false)
+
+  const toggleShowData=()=>{
+    setShowDataModal(!showDataModal)
+  }
+
+  const handleShowDetails=(item)=>{
+    setTestData({
+      ...item,
+      testName: item.testName,
+      testCategory: item.testCategory,
+      testPrice: item.testPrice,
+    });
+    setData(
+      item.excelData.map((row) =>
+        Object.keys(row).map((colKey) => ({ value: row[colKey] }))
+      )
+    );
+    toggleShowData()
+  }
+
   return (
     <>
       <Header />
@@ -313,6 +334,14 @@ const Tests = () => {
                           >
                             Edit
                           </Button>
+                          <Button
+        color="info"
+        size="sm"
+        className="mx-2"
+        onClick={() => {handleShowDetails(item)}}
+      >
+        <i className="fas fa-eye" /> 
+      </Button>
                         </td>
                       </tr>
                     ))
@@ -388,7 +417,7 @@ const Tests = () => {
                 </FormGroup>
               </Col>
               <Col xs="12">
-              <SpreadsheetComponent data={data} setData={setData}/>
+              <SpreadsheetComponent data={data} setData={setData} showBtn={true}/>
               </Col>
             </Row>
           </ModalBody>
@@ -429,6 +458,32 @@ const Tests = () => {
               {loader.btn ? <Spinner size="sm" /> : "Delete"}
             </Button>
           </div>
+        </ModalBody>
+      </Modal>
+
+      <Modal isOpen={showDataModal} centered size="xl" toggle={toggleShowData}>
+        <ModalBody>
+
+          <Container>
+            <Row>
+              <Col md="4">
+              <b>Test Name :</b> {" "}{testData.testName}
+              </Col>
+              <Col md="4">
+              <b>Test Category :</b>  {" "}{testData.testCategory}
+              </Col>
+              <Col md="4">
+              <b>Test Price :</b>{" "}{testData.testPrice}
+              </Col>
+              <Col xs="12" className="mt-4">
+              <SpreadsheetComponent data={data} setData={setData} showBtn={false}/>
+              </Col>
+            </Row>
+          </Container>
+         
+         <div className="text-end">
+          <Button color="primary" onClick={toggleShowData}>Ok</Button>
+         </div>
         </ModalBody>
       </Modal>
     </>
