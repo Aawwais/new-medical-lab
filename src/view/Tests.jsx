@@ -354,7 +354,7 @@ const Tests = () => {
                       className="mx-2"
                       onClick={() => handleShowDetails(item)}
                     >
-                    <i class="fa fa-eye"></i>
+                    <i className="fa fa-eye"></i>
                     </Button>
                   </td>
                 </tr>
