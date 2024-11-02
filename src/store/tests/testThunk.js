@@ -31,29 +31,52 @@ export const fetchTests = createAsyncThunk(
             );
 
             if (filter?.category) {
+                const categoryQuery = query(
+                    collection(db, "testCategory"),
+                    where("name", "==", filter.category)
+                );
+                const categorySnapshot = await getDocs(categoryQuery);
+
+                const testCategoryId = categorySnapshot.empty
+                    ? null
+                    : categorySnapshot.docs[0].id;
                 testsQuery = query(
                     testsQuery,
-                    where("testCategory", "==", filter.category)
+                    where("testCategoryId", "==", testCategoryId)
                 );
             }
+
             if (filter?.testId) {
                 testsQuery = query(
                     testsQuery,
                     where("testId", "==", filter.testId)
                 );
             }
+
             if (lastVisible) {
                 testsQuery = query(testsQuery, startAfter(lastVisible));
             }
 
             const snapshot = await getDocs(testsQuery);
-            const tests = snapshot.docs.map((doc) => ({
-                uid: doc.id,
-                ...doc.data(),
-            }));
+            let tests = [];
+            for await (let document of snapshot.docs) {
+                const docRef = doc(
+                    db,
+                    "testCategory",
+                    document.data().testCategoryId
+                );
+                const docSnapshot = await getDoc(docRef);
+                tests.push({
+                    uid: document.id,
+                    ...document.data(),
+                    testCategory: docSnapshot.data().name,
+                });
+            }
+
             const newLastVisible =
                 snapshot.docs[snapshot.docs.length - 1] || null;
             const hasMore = snapshot.docs.length === PAGE_SIZE;
+
             onSuccess();
             return {
                 tests,
@@ -62,6 +85,7 @@ export const fetchTests = createAsyncThunk(
                 loadMore: lastVisible,
             };
         } catch (error) {
+            console.log(error);
             return rejectWithValue(error.message);
         }
     }
@@ -71,18 +95,39 @@ export const addTest = createAsyncThunk(
     "test/addTest",
     async ({ data, onSuccess }, { rejectWithValue }) => {
         try {
+            const { testCategory, ...newData } = data;
             const uniqueId = uuidv4().slice(0, 8);
+
+            const categoryQuery = query(
+                collection(db, "testCategory"),
+                where("name", "==", testCategory)
+            );
+            const querySnapshot = await getDocs(categoryQuery);
+
+            let testCategoryId;
+
+            if (!querySnapshot.empty) {
+                testCategoryId = querySnapshot.docs[0].id;
+            } else {
+                const docCategory = await addDoc(
+                    collection(db, "testCategory"),
+                    { name: testCategory }
+                );
+                testCategoryId = docCategory.id;
+            }
+
             const test = {
-                ...data,
+                ...newData,
+                testCategoryId,
                 testId: uniqueId,
                 created_at: serverTimestamp(),
             };
-            console.log(test);
+
             const docRef = await addDoc(collection(db, "tests"), test);
             const docSnapshot = await getDoc(docRef);
 
             onSuccess();
-            return { uid: docRef.id, ...docSnapshot.data() };
+            return { uid: docRef.id, testCategory, ...docSnapshot.data() };
         } catch (error) {
             console.log(error);
             return rejectWithValue(error.message);
@@ -94,7 +139,30 @@ export const editTest = createAsyncThunk(
     "test/editTest",
     async ({ id, test, onSuccess }, { rejectWithValue }) => {
         try {
-            await updateDoc(doc(db, "tests", id), test);
+            let { testCategory, ...newData } = test;
+
+            const categoryQuery = query(
+                collection(db, "testCategory"),
+                where("name", "==", testCategory)
+            );
+            const querySnapshot = await getDocs(categoryQuery);
+
+            let testCategoryId;
+
+            if (!querySnapshot.empty) {
+                testCategoryId = querySnapshot.docs[0].id;
+            } else {
+                const docCategory = await addDoc(
+                    collection(db, "testCategory"),
+                    { name: testCategory }
+                );
+                testCategoryId = docCategory.id;
+            }
+            let update = {
+                ...newData,
+                testCategoryId,
+            };
+            await updateDoc(doc(db, "tests", id), update);
             onSuccess();
             return { uid: id, ...test };
         } catch (error) {

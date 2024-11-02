@@ -105,8 +105,10 @@ const Tests = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoader((prev) => ({ ...prev, btn: true }));
+    let {testCategory,...testNewData}=testData
     let newData = {
-      ...testData,
+      ...testNewData,
+      testCategory: testCategory.toUpperCase(),
       excelData: data.map((row, rowIndex) => {
         const rowObject = {  }; 
         row.forEach((cell, colIndex) => {
@@ -182,8 +184,13 @@ const Tests = () => {
         ...prev,
         filterApply: true,
       }));
+      let {category,...data}=filters
+      let newData={
+        ...data,
+        category:category.toUpperCase(),
+      }
       dispatch(
-        fetchTests({filter:filters, lastVisible:null , onSuccess :() => {
+        fetchTests({filter:newData, lastVisible:null , onSuccess :() => {
           setIsFilteredData(true)
           setLoader((prev) => ({
             ...prev,
