@@ -6,16 +6,15 @@ const index = () => {
   return (
     <>
       <Header />
-      <Container className="mt--7 home-page" fluid>
+      <Container className=" home-page" fluid>
         <Row>
-        
-          <Col lg="6" xl="3">
-            <Card className="card-stats mb-4 ">
+          <Col lg="6" xl="3" className="mb-2">
+            <Card className="card-stats h-100 ">
               <CardBody>
                 <Row>
                   <div className="col">
                     <CardTitle tag="h6" className="text-uppercase text-muted mb-0">
-                      Tests Conducted
+                    TO BE DELIVERED TODAY
                     </CardTitle>
                     <span className="h4 font-weight-bold mb-0">35</span>
                   </div>
@@ -28,13 +27,13 @@ const index = () => {
               </CardBody>
             </Card>
           </Col>
-          <Col lg="6" xl="3">
-            <Card className="card-stats mb-4">
+          <Col lg="6" xl="3" className="mb-2">
+            <Card className="card-stats  h-100">
               <CardBody>
                 <Row>
                   <div className="col">
                     <CardTitle tag="h6" className="text-uppercase text-muted mb-0">
-                      Pending Approvals
+                    DATE PASSES BUT NOT DELIVERED
                     </CardTitle>
                     <span className="h4 font-weight-bold mb-0">5</span>
                   </div>
@@ -47,13 +46,13 @@ const index = () => {
               </CardBody>
             </Card>
           </Col>
-          <Col lg="6" xl="3">
-            <Card className="card-stats mb-4 ">
+          <Col lg="6" xl="3" className="mb-2">
+            <Card className="card-stats h-100 ">
               <CardBody>
                 <Row>
                   <div className="col">
                     <CardTitle tag="h6" className="text-uppercase text-muted mb-0">
-                      Lab Equipment Status
+                    TOTAL TESTS
                     </CardTitle>
                     <span className="h4 font-weight-bold mb-0">4 Active</span>
                   </div>
@@ -66,13 +65,13 @@ const index = () => {
               </CardBody>
             </Card>
           </Col>
-          <Col lg="6" xl="3">
-            <Card className="card-stats mb-4 ">
+          <Col lg="6" xl="3" className="mb-2">
+            <Card className="card-stats h-100 ">
               <CardBody>
                 <Row>
                   <div className="col">
                     <CardTitle tag="h6" className="text-uppercase text-muted mb-0">
-                      Reports Generated
+                    TOTAL DELIVERABLES
                     </CardTitle>
                     <span className="h4 font-weight-bold mb-0">15</span>
                   </div>
