@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { NavLink as NavLinkRRD, Link } from "react-router-dom";
-import { PropTypes } from "prop-types";
-
+import PropTypes from "prop-types";
 import {
     Collapse,
     DropdownMenu,
@@ -10,7 +9,6 @@ import {
     DropdownToggle,
     Form,
     Input,
-    InputGroupAddon,
     InputGroupText,
     InputGroup,
     Media,
@@ -26,15 +24,17 @@ import {
 } from "reactstrap";
 import logoImage from '../../assets/images/brand/argon-react.png';
 
-
-const Sidebar = (props) => {
-    const [collapseOpen, setCollapseOpen] = useState();
+const Sidebar = ({ routes = [{}], logo }) => {
+    const [collapseOpen, setCollapseOpen] = useState(false);
+    
     const toggleCollapse = () => {
-        setCollapseOpen((data) => !data);
+        setCollapseOpen((prev) => !prev);
     };
+    
     const closeCollapse = () => {
         setCollapseOpen(false);
     };
+
     const createLinks = (routes) => {
         return routes.map((prop, key) => {
             if (prop.isMenu !== false) {
@@ -57,7 +57,6 @@ const Sidebar = (props) => {
         });
     };
 
-    const { routes, logo } = props;
     let navbarBrandProps;
     if (logo && logo.innerLink) {
         navbarBrandProps = {
@@ -103,7 +102,7 @@ const Sidebar = (props) => {
                         <DropdownMenu
                             aria-labelledby="navbar-default_dropdown_1"
                             className="dropdown-menu-arrow"
-                            right
+                            end
                         >
                             <DropdownItem>Action</DropdownItem>
                             <DropdownItem>Another action</DropdownItem>
@@ -113,25 +112,14 @@ const Sidebar = (props) => {
                     </UncontrolledDropdown>
                     <UncontrolledDropdown nav>
                         <DropdownToggle nav>
-                            <Media className="align-items-center ">
+                            <Media className="align-items-center">
                                 <span className="avatar avatar-sm rounded-circle">
-                                    {/* <img
-                                        alt="..."
-                                        src={logoImage
-                                            
-                                        }
-
-                                    /> */}
                                     <Button color="primary">Logout</Button>
                                 </span>
                             </Media>
                         </DropdownToggle>
-                        <DropdownMenu className="dropdown-menu-arrow" right>
-                            <DropdownItem
-                                className="noti-title"
-                                header
-                                tag="div"
-                            >
+                        <DropdownMenu className="dropdown-menu-arrow" end>
+                            <DropdownItem className="noti-title" header tag="div">
                                 <h6 className="text-overflow m-0">Welcome!</h6>
                             </DropdownItem>
                             <DropdownItem to="/admin/user-profile" tag={Link}>
@@ -161,24 +149,18 @@ const Sidebar = (props) => {
                         </DropdownMenu>
                     </UncontrolledDropdown>
                 </Nav>
-                <Collapse navbar isOpen={collapseOpen} className={collapseOpen&& "show-collapse"}>
+                <Collapse navbar isOpen={collapseOpen} className={collapseOpen && "show-collapse"}>
                     <div className="navbar-collapse-header d-md-none">
                         <Row>
                             {logo ? (
                                 <Col className="collapse-brand" xs="6">
                                     {logo.innerLink ? (
                                         <Link to={logo.innerLink}>
-                                            <img
-                                                alt={logo.imgAlt}
-                                                src={logo.imgSrc}
-                                            />
+                                            <img alt={logo.imgAlt} src={logo.imgSrc} />
                                         </Link>
                                     ) : (
                                         <a href={logo.outterLink}>
-                                            <img
-                                                alt={logo.imgAlt}
-                                                src={logo.imgSrc}
-                                            />
+                                            <img alt={logo.imgAlt} src={logo.imgSrc} />
                                         </a>
                                     )}
                                 </Col>
@@ -195,21 +177,6 @@ const Sidebar = (props) => {
                             </Col>
                         </Row>
                     </div>
-                    <Form className="mt-4 mb-3 d-md-none">
-                        {/* <InputGroup className="input-group-rounded input-group-merge">
-                            <Input
-                                aria-label="Search"
-                                className="form-control-rounded form-control-prepended"
-                                placeholder="Search"
-                                type="search"
-                            />
-                            <InputGroupAddon addonType="prepend">
-                                <InputGroupText>
-                                    <span className="fa fa-search" />
-                                </InputGroupText>
-                            </InputGroupAddon>
-                        </InputGroup> */}
-                    </Form>
                     <Nav navbar className="px-3">
                         {createLinks(routes)}
                     </Nav>
@@ -217,10 +184,6 @@ const Sidebar = (props) => {
             </Container>
         </Navbar>
     );
-};
-
-Sidebar.defaultProps = {
-    routes: [{}],
 };
 
 Sidebar.propTypes = {

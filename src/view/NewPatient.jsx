@@ -10,6 +10,7 @@ import {
   FormGroup,
 } from "reactstrap";
 import Header from "../components/Header/Header";
+import { toast } from "react-toastify";
 
 const NewPatient = () => {
   const [step, setStep] = useState(1);
@@ -161,7 +162,7 @@ const NewPatient = () => {
             </Button>
             <Button
               color="primary"
-              onClick={step === 3 ? "jspdf and add data here" : nextStep}
+              onClick={step === 3 ?()=>{toast.success("jspdf and add data here")}   : nextStep}
             >
               {step === 3 ? "Submit" : "Next"}
             </Button>

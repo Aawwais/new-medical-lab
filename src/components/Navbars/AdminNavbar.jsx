@@ -22,7 +22,7 @@ const AdminNavbar = (props) => {
                 expand="md"
                 id="navbar-main"
             >
-                <Container fluid>
+                <Container className="d-flex justify-content-between" fluid>
                     <Link
                         className="h5 mb-0 text-white text-uppercase d-none d-lg-inline-block text-decoration-none"
                         to="/"
