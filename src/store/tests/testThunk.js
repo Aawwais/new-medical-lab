@@ -31,18 +31,15 @@ export const fetchTests = createAsyncThunk(
             );
 
             if (filter?.category) {
-                const categoryQuery = query(
-                    collection(db, "testCategory"),
-                    where("name", "==", filter.category)
-                );
-                const categorySnapshot = await getDocs(categoryQuery);
-
-                const testCategoryId = categorySnapshot.empty
-                    ? null
-                    : categorySnapshot.docs[0].id;
                 testsQuery = query(
                     testsQuery,
-                    where("testCategoryId", "==", testCategoryId)
+                    where("testCategory", "==", filter.category)
+                );
+            }
+            if (filter?.testName) {
+                testsQuery = query(
+                    testsQuery,
+                    where("testName", "==", filter.testName)
                 );
             }
 
@@ -119,6 +116,7 @@ export const addTest = createAsyncThunk(
             const test = {
                 ...newData,
                 testCategoryId,
+                testCategory: testCategory,
                 testId: uniqueId,
                 created_at: serverTimestamp(),
             };
@@ -127,7 +125,7 @@ export const addTest = createAsyncThunk(
             const docSnapshot = await getDoc(docRef);
 
             onSuccess();
-            return { uid: docRef.id, testCategory, ...docSnapshot.data() };
+            return { uid: docRef.id, ...docSnapshot.data() };
         } catch (error) {
             console.log(error);
             return rejectWithValue(error.message);
@@ -161,6 +159,7 @@ export const editTest = createAsyncThunk(
             let update = {
                 ...newData,
                 testCategoryId,
+                testCategory,
             };
             await updateDoc(doc(db, "tests", id), update);
             onSuccess();

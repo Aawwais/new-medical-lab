@@ -6,10 +6,12 @@ import thunk from "redux-thunk";
 import userSlice from "./auth/authSlice";
 import portfolioSlice from "./portfolio/porfolioSlice";
 import testSlice from "./tests/testSlice";
+import patientSlice from "./patient/patientSlice";
 const reducers = combineReducers({
     user: userSlice,
     portfolio: portfolioSlice,
     tests: testSlice,
+    patient: patientSlice,
 });
 
 const persistConfig = {
