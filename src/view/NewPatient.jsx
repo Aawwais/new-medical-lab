@@ -13,7 +13,7 @@ import Header from "../components/Header/Header";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCategory } from "../store/patient/patientThunk";
-import { fetchTests } from "../store/tests/testThunk";
+import SelectPatientTest from "../components/SelectPatientTest";
 
 const NewPatient = () => {
   let dispatch=useDispatch()
@@ -30,46 +30,13 @@ const NewPatient = () => {
     discountType:"",
     discount:""
   })
-  const [selectTests,setSelectTests]=useState({
-    category:"",
-    testName:"",
-    testId:""
-  })
-  const {tests}=useSelector((state)=>state.tests)
-  const {category}=useSelector((state)=>state.patient)
-  
+ 
   useEffect(()=>{
     if(step==2){
       dispatch(fetchCategory())
     }
   },[step])
-    useEffect(()=>{
-      if((selectTests.category ||selectTests.testName)&& !selectTests.testId ){
-          selectTests.category=selectTests.category.toUpperCase()
-          dispatch(fetchTests({filter:selectTests,lastVisible:null,onSuccess :() => {
-
-          }}))
-      }
-      if(selectTests.testId){
-        const handler = setTimeout(() => {
-        dispatch(fetchTests({filter:{testId:selectTests.testId,category:"",testName:""},lastVisible:null,onSuccess :() => {
-          setSelectTests((prev) => ({
-            ...prev,
-            testName: tests.length>0?tests[0]?.testName:"",
-            category: tests.length>0?tests[0]?.testCategory:""
-          }))
-        }}))
-      }, 3000);
-      return () => clearTimeout(handler);
-      }
-    },[selectTests])
-  const handleChangeTests=(e)=>{
-let {value,name}=e.target 
-setSelectTests((prev)=>({
-  ...prev,
-  [name]:value
-}))
-  }
+  
   const handleChange=(e)=>{
 let {value,name}=e.target
 setPatientData((prev)=>({
@@ -150,56 +117,7 @@ setPatientData((prev)=>({
         );
       case 2:
         return (
-          <>
-            <h5>Select Test's </h5>
-            <Row>
-              <Col lg="4" className="mt-4">
-                <FormGroup>
-                  <Label for="testCategory">Select Category</Label>
-                  <Input type="select" id="testCategory" name="category" value={selectTests.category} onChange={(e)=>{handleChangeTests(e);setSelectTests((prev) => ({
-                        ...prev,
-                        testName: "",
-                        testId: ""
-                      }));}}>
-                    <option value="">Select a Category</option>
-                    {category.map((items,index)=>{
-                      return(
-                        <option value={items.name} key={index}>{items.name}</option>
-                      )
-                    })}
-                  
-                  </Input>
-                </FormGroup>
-              </Col>
-              <Col lg="4" className="mt-4">
-                <FormGroup>
-                  <Label for="test-name">Test Name</Label>
-                  <Input type="select" id="test-name" placeholder="Enter Test Name"  name="testName" value={selectTests.testName} 
-                    onChange={(e) => {
-                      const selectedTest = tests.find((test) => test.testName === e.target.value);
-                      setSelectTests((prev) => ({
-                        ...prev,
-                        testName: e.target.value,
-                        testId: selectedTest ? selectedTest.testId : ""
-                      }));
-                    }}>
-                  <option value="">Select a Category</option>
-                  {tests.map((items,index)=>{
-                    return(
-                      <option value={items.testName} key={index}>{items.testName}</option>
-                    )
-                  })}
-                  </Input>
-                </FormGroup>
-              </Col>
-              <Col lg="4" className="mt-4">
-                <FormGroup>
-                  <Label for="test-id"  >Test Id</Label>
-                  <Input id="test-id" name="testId" placeholder="Enter Test Id" value={selectTests.testId} onChange={handleChangeTests}/>
-                </FormGroup>
-              </Col>
-            </Row>
-          </>
+          <SelectPatientTest setPatientData={setPatientData}/>
         );
       case 3:
         return (

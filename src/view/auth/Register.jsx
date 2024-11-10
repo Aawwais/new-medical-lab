@@ -36,7 +36,6 @@ const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(userData);
     setBtnLoader(true);
    
     dispatch(
